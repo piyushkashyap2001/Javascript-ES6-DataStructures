@@ -1,0 +1,138 @@
+const LinkedList = (() => {
+  class Node {
+    constructor(element) {
+      this.element = element;
+      this.next = null;
+    }
+    }
+
+  const length = new WeakMap();
+  const head = new WeakMap();
+
+  class LinkedList {
+    constructor() {
+      length.set(this, 0);
+      head.set(this, null);
+    }
+
+    append(element) {
+      const node = new Node(element);
+      let current;
+
+      if (this.getHead() === null) { // first node on list
+        head.set(this, node);
+      } else {
+        current = this.getHead();
+                // loop the list until find last item
+        while (current.next) {
+          current = current.next;
+        }
+                // get last item and assign next to added item to make the link
+        current.next = node;
+      }
+            // update size of list
+      let l = this.size();
+      l += 1;
+      length.set(this, l);
+    }
+
+    insert(position, element) {
+            // check for out-of-bounds values
+      if (position >= 0 && position <= this.size()) {
+        const node = new Node(element);
+        let current = this.getHead();
+        let previous;
+        let index = 0;
+        if (position === 0) { // add on first position
+          node.next = current;
+          head.set(this, node);
+        } else {
+          while (index++ < position) {
+            previous = current;
+            current = current.next;
+          }
+          node.next = current;
+          previous.next = node;
+        }
+                // update size of list
+        let l = this.size();
+        l += 1;
+        length.set(this, l);
+        return true;
+      }
+      return false;
+    }
+
+    removeAt(position) {
+            // check for out-of-bounds values
+      if (position > -1 && position < this.size()) {
+        let current = this.getHead();
+        let previous;
+        let index = 0;
+                // removing first item
+        if (position === 0) {
+          head.set(this, current.next);
+        } else {
+          while (index++ < position) {
+            previous = current;
+            current = current.next;
+          }
+                    // link previous with current's next - skip it to remove
+          previous.next = current.next;
+        }
+
+        let l = this.size();
+        l -= 1;
+        length.set(this, l);
+
+        return current.element;
+      }
+      return null;
+    }
+
+    remove(element) {
+      const index = this.indexOf(element);
+      return this.removeAt(index);
+    }
+
+    indexOf(element) {
+      let current = this.getHead();
+      let index = 0;
+
+      while (current) {
+        if (element === current.element) {
+          return index;
+        }
+        index += 1;
+        current = current.next;
+      }
+      return -1;
+    }
+
+    isEmpty() {
+      return this.size() === 0;
+    }
+
+    size() {
+      return length.get(this);
+    }
+
+    getHead() {
+      return head.get(this);
+    }
+
+    toString() {
+      let current = this.getHead();
+      let string = '';
+      while (current) {
+        string += current.element + (current.next ? ', ' : '');
+        current = current.next;
+      }
+      return string;
+    }
+    print() {
+      console.log(this.toString());
+    }
+    }
+  return LinkedList;
+})();
